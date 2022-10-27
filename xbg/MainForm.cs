@@ -75,7 +75,7 @@ namespace xbg
             {
                 using (Graphics g = Graphics.FromHdc(dc))
                 {
-                    await re_Draw(g, rect);
+                    await re_Draw(g, new Rectangle(0,0,rect.Width,rect.Height));
                 }
                 W32.ReleaseDC(workerW, dc);
             }
