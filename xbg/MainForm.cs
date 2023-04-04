@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Win32;
 
 namespace xbg
 {
@@ -13,6 +14,7 @@ namespace xbg
         {
             InitializeComponent();
             setting = new Setting();
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             re_Draw();
         }
 
@@ -58,6 +60,7 @@ namespace xbg
         private async void timer1_Tick(object sender, EventArgs e)
         {
             await re_Draw();
+            timer1.Interval = 120*1000;
         }
 
         private async void Form1_Paint(object sender, PaintEventArgs e)
@@ -141,6 +144,13 @@ namespace xbg
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             notifyIcon1.Visible = false;
+            SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e) {
+            timer1.Stop();
+            timer1.Interval = 8000;
+            timer1.Start();
         }
     }
 }
