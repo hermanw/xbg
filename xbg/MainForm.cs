@@ -78,7 +78,26 @@ namespace xbg
             {
                 using (Graphics g = Graphics.FromHdc(dc))
                 {
-                    await re_Draw(g, new Rectangle(0,0,rect.Width,rect.Height));
+                    foreach(var screen in Screen.AllScreens)
+                    {
+                        var r = screen.Bounds;
+                        if (screen.Primary)
+                        {
+                            r.Offset(r.X - rect.X, r.Y - rect.Y);
+                        }
+                        else
+                        {
+                            int scaledWidth = rect.Width - Screen.PrimaryScreen.Bounds.Width;
+                            int realWidth = r.Width;
+                            r.X = r.X * scaledWidth / realWidth;
+                            r.Y = r.Y * scaledWidth / realWidth;
+                            r.Width = scaledWidth;
+                            r.Height = r.Height * scaledWidth / realWidth;
+                            r.X -= rect.X;
+                            r.Y -= rect.Y;
+                        }
+                        await re_Draw(g, r);
+                    }
                 }
                 W32.ReleaseDC(workerW, dc);
             }
